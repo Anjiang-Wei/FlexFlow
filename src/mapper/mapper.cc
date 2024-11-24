@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include "mappers/logging_wrapper.h"
 #include "flexflow/mapper.h"
 #include "flexflow/utils/memory_allocator.h"
 
@@ -1530,7 +1531,7 @@ void FFMapper::update_mappers(Machine machine,
                                     enable_control_replication,
                                     log_instance_creation);
     if (use_logging_wrapper) {
-      runtime->replace_default_mapper(new Mapping::LoggingWrapper(mapper), *it);
+      runtime->replace_default_mapper(new Legion::Mapping::LoggingWrapper(mapper), *it);
     } else {
       runtime->replace_default_mapper(mapper, *it);
     }
