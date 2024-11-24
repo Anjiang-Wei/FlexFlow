@@ -1499,6 +1499,7 @@ void FFMapper::update_mappers(Machine machine,
 
   bool enable_control_replication = true;
   bool log_instance_creation = false;
+  bool use_logging_wrapper = false;
   for (int i = 1; i < argc; i++) {
     // if ((!strcmp(argv[i], "--import")) || (!strcmp(argv[i],
     // "--import-strategy"))) {
@@ -1513,6 +1514,10 @@ void FFMapper::update_mappers(Machine machine,
       log_instance_creation = true;
       continue;
     }
+    if (!strcmp(argv[i], "-wrapper")) {
+      use_logging_wrapper = true;
+      continue;
+    }
   }
 
   for (std::set<Processor>::const_iterator it = local_procs.begin();
@@ -1524,7 +1529,11 @@ void FFMapper::update_mappers(Machine machine,
                                     "FlexFlow Mapper",
                                     enable_control_replication,
                                     log_instance_creation);
-    runtime->replace_default_mapper(mapper, *it);
+    if (use_logging_wrapper) {
+      runtime->replace_default_mapper(new Mapping::LoggingWrapper(mapper), *it);
+    } else {
+      runtime->replace_default_mapper(mapper, *it);
+    }
   }
 }
 
